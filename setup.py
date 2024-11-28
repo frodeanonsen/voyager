@@ -21,7 +21,7 @@ setup(
     entry_points={
         'console_scripts': [
             'range_sensor = robot_control.range_sensor:main',
-            'motor_control = robot_control.motor_control:main',
+            'tread_control = robot_control.tread_control:main',
         ],
     },
 )
