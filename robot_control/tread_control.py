@@ -24,7 +24,7 @@ class TreadControlNode(Node):
         self.left_track_correction = 1 # Adjust this to < 1 if the tank is turning right while attempting to go in a straight line Try .95 then .90 ect. 
         self.right_track_correction = 1
         self.max_linear_speed = 1.27 # Maximum linear speed in m/s - How fast our tank can actually move- I ran the linear test at full speed for 1 second to see how far the tank traveled.  This probably should be adjusted based on 10 meters or 20 meters vs 1. But it's a start. 
-        self.linear_speed_adjusted = 0.79
+        self.linear_speed_adjusted = 1.0
         # To calculate a new linear speed correction factor:
         # New Correction Factor = Current Correction Factor * (Commanded Distance / Actual Distance Travelled)
         # For example, if the tank is initially set with a correction factor of 0.79,
@@ -34,7 +34,7 @@ class TreadControlNode(Node):
         
         self.expo_linear = 2
         self.expo_angular = 2
-        self.angular_amp = 1.5 # Factor to amplify angular speed- Adjust this if the tank isn't turning like you'd expect
+        self.angular_amp = 0.5 # 1.5 # Factor to amplify angular speed- Adjust this if the tank isn't turning like you'd expect
 
         # Subscribe to the /cmd_vel topic with the message type Twist
         # This subscription will receive velocity commands for the robot
@@ -141,13 +141,13 @@ class TreadControlNode(Node):
         """
         # Calculate elapsed time since the last message was received
         elapsed_time = time() - self.last_msg_time
-        self.get_logger().info(f'Elapsed time since last command: {elapsed_time} seconds')
+        # self.get_logger().info(f'Elapsed time since last command: {elapsed_time} seconds')
 
         # Stop motors if the time since last command exceeds a threshold (0.1 seconds in this case)
         if elapsed_time >= 0.1:
             self.stop_motors(self.left_motor_pins)
             self.stop_motors(self.right_motor_pins)
-            self.get_logger().info('Motors stopped due to inactivity')
+            # self.get_logger().info('Motors stopped due to inactivity')
 
     def drive(self, pins, fwd, rev, speed):
         """
