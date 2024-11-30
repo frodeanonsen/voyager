@@ -22,6 +22,7 @@ setup(
         'console_scripts': [
             'range_sensor = robot_control.range_sensor:main',
             'tread_control = robot_control.tread_control:main',
+            'obstacle_avoider = robot_control.obstacle_avoider:main',
         ],
     },
 )

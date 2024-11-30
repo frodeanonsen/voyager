@@ -10,6 +10,7 @@ class RangeSensorNode(Node):
         self.publisher = self.create_publisher(Range, 'ultrasonic_range', 10)
         self.timer = self.create_timer(0.1, self.read_sensor)
         self.init_sensor_pins()
+        self.get_logger().info('Initialized RangeSensorNode')
 
     def init_sensor_pins(self):
         self.trig_pin = 13
