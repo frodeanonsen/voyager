@@ -2,6 +2,9 @@ import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Range
+from rclpy.time import Time
+import random
+
 
 class ObstacleAvoider(Node):
     def __init__(self):
@@ -10,37 +13,63 @@ class ObstacleAvoider(Node):
         self.subscriber = self.create_subscription(Range, '/ultrasonic_range', self.range_callback, 10)
         # Publisher for movement commands
         self.publisher = self.create_publisher(Twist, '/cmd_vel', 10)
-        self.safe_distance = 0.2  # Minimum distance in meters
-        self.turning = False
-        self.turn_timer = self.create_timer(0.1, self.turn_control)
-        self.stop_turning_after = 2.0  # seconds
-        self.turn_start_time = None
+
+        # Parameters
+        self.safe_distance = 0.2  # Minimum distance to stop
+        self.forward_speed = 0.3  # Speed for moving forward
+        self.turn_speed = 0.3     # Speed for turning
+        self.forward_time = 10.0  # Max time to move forward (seconds)
+        self.turn_time = 2.0      # Time to turn (seconds)
+
+        # State
+        self.state = 'forward'  # Current state: 'forward' or 'turn'
+        self.last_state_change = self.get_clock().now()
+        self.turn_direction = 1  # 1 for right, -1 for left (default to right)
+
         self.get_logger().info('Initialized ObstacleAvoider')
 
+        # Timer for state management
+        self.timer = self.create_timer(0.1, self.state_machine)
+
+
     def range_callback(self, msg):
-        self.get_logger().info(f'range_callback: {msg}')
+        """Check for obstacles and update behavior."""
+        if self.state == 'forward' and msg.range <= self.safe_distance:
+            self.state = 'turn'
+            self.last_state_change = self.get_clock().now()
+            self.turn_direction = random.choice([-1, 1])  # Randomly choose left or right
+
+
+    def state_machine(self):
+        """State machine to control robot behavior."""
         twist = Twist()
-        if not self.turning:
-            if msg.range > self.safe_distance:
-                twist.linear.x = 0.3  # Move forward
-                twist.angular.z = 0.0  # No turning
+        current_time = self.get_clock().now()
+        elapsed_time = (current_time - self.last_state_change).nanoseconds / 1e9
+
+        if self.state == 'forward':
+            self.get_logger().info('forward')
+            # Drive forward for a maximum of forward_time seconds
+            if elapsed_time < self.forward_time:
+                twist.linear.x = self.forward_speed
+                twist.angular.z = 0.0
             else:
-                twist.linear.x = 0.0  # Stop
-                self.turning = True
-                self.turn_start_time = self.get_clock().now()
+                self.state = 'turn'
+                self.last_state_change = current_time
+                self.turn_direction = random.choice([-1, 1])  # Randomly choose left or right
+
+        elif self.state == 'turn':
+            self.get_logger().info(f'turn {"left" if self.turn_direction < 0 else "right"}')
+            # Turn for turn_time seconds
+            if elapsed_time < self.turn_time:
+                twist.linear.x = 0.0
+                twist.angular.z = self.turn_speed * self.turn_direction
+            else:
+                self.state = 'forward'
+                self.last_state_change = current_time
+
+        # Publish the movement command
         self.publisher.publish(twist)
 
-    def turn_control(self):
-        """Handle turning logic when in 'turning' state."""
-        if self.turning and self.turn_start_time:
-            twist = Twist()
-            elapsed_time = (self.get_clock().now() - self.turn_start_time).nanoseconds / 1e9
-            if elapsed_time < self.stop_turning_after:
-                twist.angular.z = 0.3  # Turn at a fixed rate
-                twist.linear.x = 0.0
-                self.publisher.publish(twist)
-            else:
-                self.turning = False  # Stop turning after the duration
 
 def main(args=None):
     rclpy.init(args=args)
