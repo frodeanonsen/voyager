@@ -15,11 +15,13 @@ class ObstacleAvoider(Node):
         self.publisher = self.create_publisher(Twist, '/cmd_vel', 10)
 
         # Parameters
-        self.safe_distance = 0.2  # Minimum distance to stop
-        self.forward_speed = 0.3  # Speed for moving forward
-        self.turn_speed = 0.3     # Speed for turning
-        self.forward_time = 10.0  # Max time to move forward (seconds)
-        self.turn_time = 2.0      # Time to turn (seconds)
+        self.safe_distance = 0.3  # Minimum distance to stop
+        self.forward_speed = 0.2  # Speed for moving forward
+        self.reverse_speed = -0.2 # Speed for reversing
+        self.turn_speed = 0.25    # Speed for turning
+        self.forward_time = 5.0   # Max time to move forward (seconds)
+        self.reverse_time = 0.5   # Time to reverse (seconds)
+        self.turn_time = 0.5      # Time to turn (seconds)
 
         # State
         self.state = 'forward'  # Current state: 'forward' or 'turn'
@@ -35,7 +37,8 @@ class ObstacleAvoider(Node):
     def range_callback(self, msg):
         """Check for obstacles and update behavior."""
         if self.state == 'forward' and msg.range <= self.safe_distance:
-            self.state = 'turn'
+            self.get_logger().info(f'Too close: {msg.range}. Reversing and turning.')
+            self.state = 'reverse'
             self.last_state_change = self.get_clock().now()
             self.turn_direction = random.choice([-1, 1])  # Randomly choose left or right
 
@@ -51,6 +54,16 @@ class ObstacleAvoider(Node):
             # Drive forward for a maximum of forward_time seconds
             if elapsed_time < self.forward_time:
                 twist.linear.x = self.forward_speed
+                twist.angular.z = 0.0
+            else:
+                self.state = 'turn'
+                self.last_state_change = current_time
+                self.turn_direction = random.choice([-1, 1])  # Randomly choose left or right
+
+        elif self.state == 'reverse':
+            # Reverse for reverse_time seconds
+            if elapsed_time < self.reverse_time:
+                twist.linear.x = self.reverse_speed
                 twist.angular.z = 0.0
             else:
                 self.state = 'turn'
