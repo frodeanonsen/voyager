@@ -111,24 +111,24 @@ class TreadControlNode(Node):
         # Control the left motor based on calculated speed
         if left_speed > 0:  # Forward condition
             self.drive(self.left_motor_pins, True, False, abs(left_speed))
-            self.get_logger().info(f'Left motor driving forward at speed: {abs(left_speed)}')
+            self.get_logger().debug(f'Left motor driving forward at speed: {abs(left_speed)}')
         elif left_speed < 0:  # Reverse condition
             self.drive(self.left_motor_pins, False, True, abs(left_speed))
-            self.get_logger().info(f'Left motor driving backward at speed: {abs(left_speed)}')
+            self.get_logger().debug(f'Left motor driving backward at speed: {abs(left_speed)}')
         else:  # Stop condition
             self.stop_motors(self.left_motor_pins)
-            self.get_logger().info('Left motor stopped')
+            self.get_logger().debug('Left motor stopped')
 
         # Similarly, control the right motor
         if right_speed > 0:
             self.drive(self.right_motor_pins, True, False, abs(right_speed))
-            self.get_logger().info(f'Right motor driving forward at speed: {abs(right_speed)}')
+            self.get_logger().debug(f'Right motor driving forward at speed: {abs(right_speed)}')
         elif right_speed < 0:
             self.drive(self.right_motor_pins, False, True, abs(right_speed))
-            self.get_logger().info(f'Right motor driving backward at speed: {abs(right_speed)}')
+            self.get_logger().debug(f'Right motor driving backward at speed: {abs(right_speed)}')
         else:
             self.stop_motors(self.right_motor_pins)
-            self.get_logger().info('Right motor stopped')
+            self.get_logger().debug('Right motor stopped')
 
         # Update the time of the last message received
         self.last_msg_time = time()
@@ -182,8 +182,8 @@ class TreadControlNode(Node):
             self.right_pwm.ChangeDutyCycle(speed)
 
         # Log the motor direction and speed
-        self.get_logger().info(f'Motor direction: {"forward" if fwd else "backward"}')
-        self.get_logger().info(f'Motor speed set to: {speed}')
+        self.get_logger().debug(f'Motor direction: {"forward" if fwd else "backward"}')
+        self.get_logger().debug(f'Motor speed set to: {speed}')
 
 
     def stop_motors(self, pins):
