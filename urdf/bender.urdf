@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<robot name="Bender">
+
+  <!-- Base Link -->
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="0.5 0.3 0.2" /> <!-- Size: width, depth, height -->
+      </geometry>
+      <material name="gray">
+        <color rgba="0.6 0.6 0.6 1.0"/> <!-- Light gray -->
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.5 0.3 0.2" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="5.0" /> <!-- Base mass -->
+      <origin xyz="0 0 0" />
+      <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1" />
+    </inertial>
+  </link>
+
+  <!-- Left Tread -->
+  <link name="left_tread">
+    <visual>
+      <geometry>
+        <cylinder radius="0.05" length="0.4" /> <!-- Radius and length of the tread -->
+      </geometry>
+      <material name="black">
+        <color rgba="0.1 0.1 0.1 1.0"/> <!-- Black color -->
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.05" length="0.4" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0" />
+      <origin xyz="0 0 0" />
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01" />
+    </inertial>
+  </link>
+
+  <!-- Right Tread -->
+  <link name="right_tread">
+    <visual>
+      <geometry>
+        <cylinder radius="0.05" length="0.4" />
+      </geometry>
+      <material name="black">
+        <color rgba="0.1 0.1 0.1 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.05" length="0.4" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0" />
+      <origin xyz="0 0 0" />
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01" />
+    </inertial>
+  </link>
+
+  <!-- Joint: Base to Left Tread -->
+  <joint name="base_to_left_tread" type="fixed">
+    <parent link="base_link" />
+    <child link="left_tread" />
+    <origin xyz="0.0 0.2 0.0" rpy="0 0 0" /> <!-- Offset position -->
+  </joint>
+
+  <!-- Joint: Base to Right Tread -->
+  <joint name="base_to_right_tread" type="fixed">
+    <parent link="base_link" />
+    <child link="right_tread" />
+    <origin xyz="0.0 -0.2 0.0" rpy="0 0 0" /> <!-- Offset position -->
+  </joint>
+
+</robot>
+

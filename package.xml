@@ -3,9 +3,15 @@
 <package format="3">
   <name>robot_control</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
-  <maintainer email="frode@todo.todo">frode</maintainer>
+  <description>Tank robot</description>
+  <maintainer email="frode@anonsen.org">frode</maintainer>
   <license>TODO: License declaration</license>
+
+  <build_depend>ament_cmake</build_depend>
+  <exec_depend>ament_cmake</exec_depend>
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>rviz2</exec_depend>
+
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
