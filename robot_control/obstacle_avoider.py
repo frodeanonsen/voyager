@@ -20,7 +20,7 @@ class ObstacleAvoider(Node):
         self.reverse_speed = -0.2 # Speed for reversing
         self.turn_speed = 0.25    # Speed for turning
         self.forward_time = 5.0   # Max time to move forward (seconds)
-        self.reverse_time = 0.5   # Time to reverse (seconds)
+        self.reverse_time = 1.0   # Time to reverse (seconds)
         self.turn_time = 0.5      # Time to turn (seconds)
 
         # State
