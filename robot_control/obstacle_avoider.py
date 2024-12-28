@@ -2,15 +2,17 @@ import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Range
-from rclpy.time import Time
+from std_msgs.msg import Bool
 import random
 
 
 class ObstacleAvoider(Node):
     def __init__(self):
         super().__init__('obstacle_avoider')
-        # Subscribe to ultrasonic range data
-        self.subscriber = self.create_subscription(Range, '/ultrasonic_range', self.range_callback, 10)
+
+        # Subscribe to ultrasonic range data and robot_mode changes
+        self.sub_mode = self.create_subscription(Bool, '/robot_mode', self.mode_callback, 10)
+
         # Publisher for movement commands
         self.publisher = self.create_publisher(Twist, '/cmd_vel', 10)
 
@@ -28,10 +30,9 @@ class ObstacleAvoider(Node):
         self.last_state_change = self.get_clock().now()
         self.turn_direction = 1  # 1 for right, -1 for left (default to right)
 
-        self.get_logger().info('Initialized ObstacleAvoider')
+        self.autonomy_enabled = False
 
-        # Timer for state management
-        self.timer = self.create_timer(0.1, self.state_machine)
+        self.get_logger().info('Initialized ObstacleAvoider')
 
 
     def range_callback(self, msg):
@@ -42,9 +43,24 @@ class ObstacleAvoider(Node):
             self.last_state_change = self.get_clock().now()
             self.turn_direction = random.choice([-1, 1])  # Randomly choose left or right
 
+    def mode_callback(self, new_mode: Bool):
+        self.autonomy_enabled = new_mode.data
+        if self.autonomy_enabled:
+            self.get_logger().info('Autonomy mode enabled')
+            # Subscription to ultrasonic_range changes
+            self.sub_range = self.create_subscription(Range, '/ultrasonic_range', self.range_callback, 10)
+            # Timer for state management
+            self.timer = self.create_timer(0.1, self.state_machine)
+        else:
+            self.get_logger().info('Autonomy mode disabled')
+            if self.timer is not None:
+                self.timer.destroy()
+            if self.sub_range is not None:
+                self.sub_range.destroy()
 
     def state_machine(self):
         """State machine to control robot behavior."""
+
         twist = Twist()
         current_time = self.get_clock().now()
         elapsed_time = (current_time - self.last_state_change).nanoseconds / 1e9
