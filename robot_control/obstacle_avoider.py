@@ -20,9 +20,9 @@ class ObstacleAvoider(Node):
 
         # Parameters
         self.safe_distance = 0.3  # Minimum distance to stop
-        self.forward_speed = 0.2  # Speed for moving forward
-        self.reverse_speed = -0.2  # Speed for reversing
-        self.turn_speed = 0.25  # Speed for turning
+        self.forward_speed = 0.4  # Speed for moving forward
+        self.reverse_speed = -0.4  # Speed for reversing
+        self.turn_speed = 0.5  # Speed for turning
         self.forward_time = 5.0  # Max time to move forward (seconds)
         self.reverse_time = 1.0  # Time to reverse (seconds)
         self.turn_time = 0.5  # Time to turn (seconds)
@@ -33,6 +33,10 @@ class ObstacleAvoider(Node):
         self.turn_direction = 1  # 1 for right, -1 for left (default to right)
 
         self.autonomy_enabled = False
+
+        self.sub_range = self.create_subscription(
+            Range, "/ultrasonic_range", self.range_callback, 10
+        )
 
         self.get_logger().info("Initialized ObstacleAvoider")
 
@@ -51,17 +55,17 @@ class ObstacleAvoider(Node):
         if self.autonomy_enabled:
             self.get_logger().info("Autonomy mode enabled")
             # Subscription to ultrasonic_range changes
-            self.sub_range = self.create_subscription(
-                Range, "/ultrasonic_range", self.range_callback, 10
-            )
+            # self.sub_range = self.create_subscription(
+            #     Range, "/ultrasonic_range", self.range_callback, 10
+            # )
             # Timer for state management
             self.timer = self.create_timer(0.1, self.state_machine)
         else:
             self.get_logger().info("Autonomy mode disabled")
             if self.timer is not None:
                 self.timer.destroy()
-            if self.sub_range is not None:
-                self.sub_range.destroy()
+            # if self.sub_range is not None:
+            #     self.sub_range.destroy()
 
     def state_machine(self):
         """State machine to control robot behavior."""
