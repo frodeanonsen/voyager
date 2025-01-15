@@ -2,7 +2,7 @@ import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Range
 from robot_control.msg import Emotion
-import time
+
 
 class EmotionNode(Node):
     def __init__(self):
@@ -21,7 +21,7 @@ class EmotionNode(Node):
         current_time = self.get_clock().now()
         elapsed_time = (current_time - self.last_state_change).nanoseconds / 1e9
         if elapsed_time > 30:
-            self.current_emotion = Emotion.SLEEP
+            self.current_emotion = Emotion.SLEEPING
             self.publish_emotion()
 
     def publish_emotion(self):
