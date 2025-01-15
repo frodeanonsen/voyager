@@ -3,27 +3,31 @@ project(robot_control)
 
 # Find dependencies
 find_package(ament_cmake REQUIRED)
-
-# Install the URDF directory
-install(DIRECTORY urdf/
-  DESTINATION share/${PROJECT_NAME}/urdf
-)
-
-# Install the launch directory (if you have launch files)
-install(DIRECTORY launch/
-  DESTINATION share/${PROJECT_NAME}/launch
-)
-
-# Install RViz configuration (optional, if you have RViz files)
-install(DIRECTORY rviz/
-  DESTINATION share/${PROJECT_NAME}/rviz
-)
-
 find_package(rosidl_default_generators REQUIRED)
 
+# Generate ROS 2 message interfaces
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/Emotion.msg"
 )
 
+# Export dependencies for runtime
+ament_export_dependencies(rosidl_default_runtime)
+
+# Install URDF directory
+install(DIRECTORY urdf/
+  DESTINATION share/${PROJECT_NAME}/urdf
+)
+
+# Install launch directory
+install(DIRECTORY launch/
+  DESTINATION share/${PROJECT_NAME}/launch
+)
+
+# Install RViz configuration
+install(DIRECTORY rviz/
+  DESTINATION share/${PROJECT_NAME}/rviz
+)
+
+# Finalize package
 ament_package()
 
