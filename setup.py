@@ -26,7 +26,8 @@ setup(
             'tread_control = robot_control.tread_control:main',
             'obstacle_avoider = robot_control.obstacle_avoider:main',
             'game_control = robot_control.game_control:main',
-            'robot_mode= robot_control.robot_mode:main',
+            'robot_mode = robot_control.robot_mode:main',
+            'emotion_control = robot_control.emotion_control:main',
         ],
     },
 )

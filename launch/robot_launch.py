@@ -44,5 +44,11 @@ def generate_launch_description():
             name='robot_mode',
             output='screen'
         ),
+        Node(
+            package='robot_control',
+            executable='emotion_control',
+            name='emotion_control',
+            output='screen'
+        ),
     ])
 
