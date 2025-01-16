@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = 'robot_control'
+package_name = 'voyager'
 
 setup(
     name=package_name,
@@ -22,12 +22,12 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'range_sensor = robot_control.range_sensor:main',
-            'tread_control = robot_control.tread_control:main',
-            'obstacle_avoider = robot_control.obstacle_avoider:main',
-            'game_control = robot_control.game_control:main',
-            'robot_mode = robot_control.robot_mode:main',
-            'emotion_control = robot_control.emotion_control:main',
+            'range_sensor = voyager.range_sensor:main',
+            'tread_control = voyager.tread_control:main',
+            'obstacle_avoider = voyager.obstacle_avoider:main',
+            'game_control = voyager.game_control:main',
+            'robot_mode = voyager.robot_mode:main',
+            'emotion_control = voyager.emotion_control:main',
         ],
     },
 )

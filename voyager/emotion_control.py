@@ -1,7 +1,7 @@
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Range
-from robot_control.msg import Emotion
+from voyager_msgs.msg import Emotion
 
 
 class EmotionNode(Node):

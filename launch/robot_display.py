@@ -6,9 +6,9 @@ import os
 
 def generate_launch_description():
     urdf_file = os.path.join(
-        get_package_share_directory('robot_control'),
+        get_package_share_directory('voyager'),
         'urdf',
-        'bender.urdf'
+        'voyager.urdf'
     )
 
     return LaunchDescription([
@@ -24,7 +24,7 @@ def generate_launch_description():
             executable='rviz2',
             name='rviz2',
             output='screen',
-            arguments=['-d', os.path.join(get_package_share_directory('robot_control'), 'rviz', 'display.rviz')]
+            arguments=['-d', os.path.join(get_package_share_directory('voyager'), 'rviz', 'display.rviz')]
         )
     ])
 
