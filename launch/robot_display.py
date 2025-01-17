@@ -1,4 +1,4 @@
-# bender_description/launch/bender_display.launch.py
+# voyager_description/launch/voyager_display.launch.py
 from launch import LaunchDescription
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory

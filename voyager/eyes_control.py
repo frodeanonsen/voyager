@@ -1,9 +1,9 @@
 import sys
 import pygame
-from pygame.surface import Surface
 import pygame.gfxdraw
-import time
-
+import rclpy
+from rclpy.node import Node
+from voyager_msgs.msg import Emotion
 
 def hex_to_rgb(hex_color):
     return tuple(int(hex_color[i : i + 2], 16) for i in (0, 2, 4))
@@ -28,12 +28,12 @@ def draw_rounded_polygon(screen, color, points, radius):
     pygame.draw.polygon(screen, color, points)
 
 
-class Eyes:
-
-    def __init__(self, screen: Surface):
+class EyesNode(Node):
+    def __init__(self):
+        width, height = 800, 600
+        self.screen = pygame.display.set_mode((width, height))
         pygame.init()
         pygame.display.set_caption("Voyager Eyes")
-        self.screen = screen
         self.background_color = (0, 0, 0)
         self.eye_color = hex_to_rgb("67faf9")
         self.neutral_width = 150
@@ -52,6 +52,11 @@ class Eyes:
 
         self.sleep_y = self.y + (self.neutral_height - self.sleep_height)
         self.squint_y = self.y + ((self.neutral_height // 2) - self.squint_height)
+
+
+        self.sub_range = self.create_subscription(
+            Emotion, "/emotion", self.emotion_callback, 10
+        )
 
     def clear(self):
         self.screen.fill(self.background_color)
@@ -180,55 +185,23 @@ class Eyes:
         self.draw_angry(very_angry=True)
 
 
-def main():
-    width, height = 800, 600
-    screen = pygame.display.set_mode((width, height))
-    clock = pygame.time.Clock()
-    eyes = Eyes(screen)
+    def emotion_callback(self, msg):
+        self.clear()
 
-    emotions = {
-        "neutral": eyes.draw_eyes_neutral,
-        "squinting": eyes.draw_eyes_squint,
-        "sleeping": eyes.draw_eyes_sleep,
-        "look_left": eyes.draw_left,
-        "look_right": eyes.draw_right,
-        "angry": eyes.draw_angry,
-        "furious": eyes.draw_furious,
-    }
-
-    emotion = emotions["neutral"]
-
-    start_time = time.time()
-
-    # Main loop
-    running = True
-    while running:
-        clock.tick(60)
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT or (
-                event.type == pygame.KEYDOWN
-                and (event.key == pygame.K_ESCAPE or event.key == pygame.K_q)
-            ):
-                running = False
-
-        if time.time() - start_time > 1:
-            emotion = emotions["angry"]
-        if time.time() - start_time > 3:
-            emotion = emotions["furious"]
-        # if time.time() - start_time > 4:
-        #     emotion = emotions["look_right"]
-        # if time.time() - start_time > 7:
-        #     emotion = emotions["sleeping"]
-        if time.time() - start_time > 10:
-            emotion = emotions["neutral"]
-            start_time = time.time()
-
-        eyes.clear()
-
-        emotion()
+        if msg.emotion == Emotion.SLEEPING:
+            self.draw_eyes_sleep()
+        else:
+            self.draw_eyes_neutral()
 
         # Update the display
         pygame.display.flip()
+
+def main(args=None):
+    rclpy.init(args=args)
+    node = EyesNode()
+    rclpy.spin(node)
+    node.destroy_node()
+    rclpy.shutdown()
 
     # Quit pygame
     pygame.quit()
