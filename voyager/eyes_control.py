@@ -31,7 +31,7 @@ def draw_rounded_polygon(screen, color, points, radius):
 class EyesNode(Node):
     def __init__(self):
         super().__init__('eyes_control')
-        width, height = 800, 600
+        width, height = 800, 480
         self.screen = pygame.display.set_mode((width, height))
         pygame.init()
         pygame.display.set_caption("Voyager Eyes")
