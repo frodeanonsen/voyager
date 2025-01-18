@@ -28,6 +28,7 @@ setup(
             'game_control = voyager.game_control:main',
             'robot_mode = voyager.robot_mode:main',
             'emotion_control = voyager.emotion_control:main',
+            'eyes_control = voyager.eyes_control:main',
         ],
     },
 )

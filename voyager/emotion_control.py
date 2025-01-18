@@ -32,9 +32,13 @@ class EmotionNode(Node):
         self.last_state_change = self.get_clock().now()
 
     def range_callback(self, msg):
-        self.get_logger().info(f"range: {msg}")
         if msg.range <= self.safe_distance:
+            self.get_logger().info(f"range: {msg}")
             self.current_emotion = Emotion.ANGRY
+            self.publish_emotion()
+        elif self.current_emotion == Emotion.ANGRY:
+            self.get_logger().info(f"range: {msg}")
+            self.current_emotion = Emotion.NEUTRAL
             self.publish_emotion()
 
 

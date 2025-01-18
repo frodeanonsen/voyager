@@ -30,6 +30,7 @@ def draw_rounded_polygon(screen, color, points, radius):
 
 class EyesNode(Node):
     def __init__(self):
+        super().__init__('eyes_control')
         width, height = 800, 600
         self.screen = pygame.display.set_mode((width, height))
         pygame.init()
@@ -54,9 +55,7 @@ class EyesNode(Node):
         self.squint_y = self.y + ((self.neutral_height // 2) - self.squint_height)
 
 
-        self.sub_range = self.create_subscription(
-            Emotion, "/emotion", self.emotion_callback, 10
-        )
+        self.create_subscription(Emotion, "/emotion", self.emotion_callback, 10)
 
     def clear(self):
         self.screen.fill(self.background_color)
@@ -186,10 +185,13 @@ class EyesNode(Node):
 
 
     def emotion_callback(self, msg):
+        self.get_logger().info(f"emotion callback: {msg}")
         self.clear()
 
         if msg.emotion == Emotion.SLEEPING:
             self.draw_eyes_sleep()
+        elif msg.emotion == Emotion.ANGRY:
+            self.draw_angry()
         else:
             self.draw_eyes_neutral()
 

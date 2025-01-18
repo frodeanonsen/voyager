@@ -50,5 +50,11 @@ def generate_launch_description():
             name='emotion_control',
             output='screen'
         ),
+        Node(
+            package='voyager',
+            executable='eyes_control',
+            name='eyes_control',
+            output='screen'
+        ),
     ])
 
