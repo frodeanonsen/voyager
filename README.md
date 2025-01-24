@@ -58,7 +58,6 @@ This launch file starts various nodes required for the robot's operation, includ
 
 To set up the project, follow the ROS2 Jazzy instructions.
 
-
 ## Running the Project
 
 To run the project, use the following command:
@@ -77,4 +76,4 @@ colcon test
 
 ## License
 
-This project is licensed under the MIT License. See the LICENSE.md file for details.
+This project is licensed under the MIT License. See the LICENSE file for details.
